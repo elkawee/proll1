@@ -1,41 +1,62 @@
 
 
-* babel gambits
-
-(defun org-babel-execute:swi-prolog (body params)
-  "experimentally exec prolog"
-  (message "executing prolog source code block")
-  (with-temp-file "/tmp/foo.pl"
-  (insert body))
-  (org-babel-eval "swipl -g 'go(X)' -t halt -s /tmp/foo.pl" body  ))
+* babel prelude
 
 
+#+begin_src emacs-lisp
+  (defun org-babel-execute:swi-prolog (body params)
+    "experimentally exec prolog"
+    ;; im wesentlichen geklaut von org-babel-execute:js
+    (let* ((tangle (cdr (assoc :tangle params )))
+           (script-file (if (string-equal tangle "no" )
+                            (org-babel-temp-file "prolog-tmp-" ) 
+                          tangle )))
+  
+    
+           (with-temp-file script-file (insert body))
+           (shell-command-to-string
+             (message (format "swipl -g 'go.' -t halt -s %s" 
+                     (org-babel-process-file-name script-file))))
+  
+           )
+    )
+#+end_src
+
+#+RESULTS:
+: org-babel-execute:swi-prolog
+
+
+## 
 * book 
 
 ** party pairs 
 
-   die Definition mit : 
-   pair(X,Y) :- male(X),female(Y).
-   pair(X,Y) :- pair(Y,X). 
-   fuehrt schon zu endlosrekursion 
+*** prolog 
 
-#+begin_src swi-prolog :tangle /tmp/foo.pl :noweb yes 
+#+begin_src swi-prolog :tangle src_out/chap1_pairs.pl :noweb yes 
 
-male(bertram).
+male(bert).
 male(parcival).
 
 female(lucinda).
 female(camilla).
 
 pair(X,Y) :- male(X),female(Y).
-%pair(X,Y) :- pair(Y,X).
 pair(X,Y) :- female(X),male(Y).
+
+
+go :- findall( (A,B) , pair(A,B) , L ) , print(L).
 #+end_src
 
 #+RESULTS:
-: blah
+: % /Users/elkawee/src/projects/reasoned/clause_and_effect/examples/src_out/chap1_pairs.pl compiled 0.00 sec, 8 clauses
+: [ (bert,lucinda), (bert,camilla), (parcival,lucinda), (parcival,camilla), (lucinda,bert), (lucinda,parcival), (camilla,bert), (camilla,parcival)]
 
 
+
+
+
+*** racket 
    die racket version ebenso 
 
 #+begin_src scheme :tangle ~/foo.rkt :noweb yes 
@@ -44,7 +65,7 @@ pair(X,Y) :- female(X),male(Y).
   
   (define (male X)
     (cond-e
-     [(=:= X 'bertram)]
+     [(=:= X 'bert)]
      [(=:= X 'parcival)]
      ))
   
