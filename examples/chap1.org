@@ -92,7 +92,7 @@ go :- findall( (A,B) , pair(A,B) , L ) , print(L).
 ** drinking pairs 
 
 *** prolog 
-#+begin_src prolog 
+#+begin_src swi-prolog :tangle src_out/chap1_drinking_pairs.pl :noweb yes 
 
 drinks(john, martini).
 drinks(mary, gin).
@@ -104,13 +104,19 @@ drinks(james-b, martini).
 
 pair(X,Y) :- drinks(X,Z),drinks(Y,Z),X\==Y.
 
+go :- findall( (A,B) , pair(A,B) , L ) , print(L).
+
 #+end_src
+
+#+RESULTS:
+: % /Users/elkawee/src/projects/reasoned/clause_and_effect/examples/src_out/chap1_drinking_pairs.pl compiled 0.00 sec, 9 clauses
+: [ (john,james-b), (mary,john), (mary,fred), (john,mary), (john,fred), (fred,mary), (fred,john), (james-b,john)]
 
 *** racket
 
-#+begin_src scheme :tangle ~/foo.rkt :noweb yes 
+#+begin_src scheme :tangle src_out/chap1_drinking_pairs.rkt :noweb yes 
   #lang racket
-  (require (file "/Users/elkawee/src/projects/reasoned/clause_and_effect/proll1/proll1.rkt"))
+  (require (file "../../proll1/src_out/proll1.rkt"))
   
   (define (drinks P D)
     (cond-e 
@@ -135,147 +141,7 @@ pair(X,Y) :- drinks(X,Z),drinks(Y,Z),X\==Y.
 #+end_src
 
 #+RESULTS:
-#+begin_example
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-making fresh: #<Var> #<procedure:...ction_blocks.rkt:49:37> 
-making fresh: #<Var> #<procedure:...ction_blocks.rkt:78:10> 
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->john, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:98:10>)
-"lol"->john, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->mary, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-martinigin
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->susan, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-martiniwodka
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->john, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-martinigin
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:91:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->fred, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-martinigin
-"lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->james-b, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:98:10>)
-"lol"->james-b, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-johnjames-b
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-johnmary
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-johnsusan
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->john, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-ginmartini
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->mary, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:98:10>)
-"lol"->mary, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-johnmary
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->susan, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-ginwodka
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->john, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:98:10>)
-"lol"->john, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:91:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->fred, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:98:10>)
-"lol"->fred, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-johnfred
-"lol"->gin, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:31:10>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->james-b, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-ginmartini
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-G-list (#<procedure:...ction_blocks.rkt:91:39> #<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:98:10>)
-"lol"->|_|, "lol"->|_|, ()
-johnfred
-"lol"->|_|, "lol"->|_|, ()
-johnjames-b
-query for : #<Var>
- in :"lol"->james-b, "lol"->martini, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->mary, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->fred, "lol"->gin, "lol"->|_|, "lol"->|_|, ()
-'((james-b) (mary) (fred))
-#+end_example
-
+: '((james-b) (mary) (fred))
 
 
 
@@ -283,7 +149,7 @@ query for : #<Var>
 
 *** prolog 
 
-#+begin_src prolog
+#+begin_src swi-prolog :tangle src_out/chap1_affordable_journeys.pl :noweb yes 
 border(sussex, kent).
 border(sussex, surry).
 border(surrey, kent).
@@ -298,14 +164,23 @@ border(wiltshire, berkshire).
 adjacent(X, Y) :- border(X, Y).
 adjacent(X, Y) :- border(Y, X).
 
-affordable(X, Y) :- border(X,Z),border(Z,Y),X\==Y.
+affordable(X, Y) :- adjacent(X,Z),adjacent(Z,Y),X\==Y.
+
+go :- findall( (X,Y) , affordable(X,Y) , L ) , print(L).
+
+
+
 #+end_src
+
+#+RESULTS:
+: % /Users/elkawee/src/projects/reasoned/clause_and_effect/examples/src_out/chap1_affordable_journeys.pl compiled 0.00 sec, 14 clauses
+: [ (sussex,surrey), (surrey,sussex), (hampshire,kent), (hampshire,surry), (hampshire,kent), (hampshire,berkshire), (hampshire,surrey), (hampshire,wiltshire), (berkshire,kent), (berkshire,hampshire), (wiltshire,sussex), (wiltshire,surrey), (wiltshire,berkshire), (wiltshire,surrey), (wiltshire,hampshire), (kent,surry), (kent,hampshire), (surry,kent), (surry,hampshire), (kent,hampshire), (kent,berkshire), (sussex,surrey), (sussex,berkshire), (sussex,wiltshire), (surrey,sussex), (surrey,berkshire), (surrey,wiltshire), (berkshire,sussex), (berkshire,surrey), (berkshire,wiltshire), (surrey,hampshire), (surrey,wiltshire), (hampshire,berkshire), (berkshire,hampshire)]
 
 *** racket 
 
 [((make_pred/2 rest ) X Y)]
 kann hier nicht unausgefuehrt bleiben, wegen contract violation auf make-cond-e 
-{will (-> sub? goal?) bekommt binaere funktion }
+{will (-> sub? goal?), bekommt binaere funktion }
 
 
 #+name: make_pred_2
@@ -326,62 +201,44 @@ kann hier nicht unausgefuehrt bleiben, wegen contract violation auf make-cond-e
 
 das reicht erstmal an metaing the meta 
 
-#+begin_src scheme :tangle ~/foo.rkt :noweb yes
-  #lang racket 
-  (require (file "/Users/elkawee/src/projects/reasoned/clause_and_effect/proll1/proll1.rkt"))
-  <<make_pred_2>>
-  
-  (define border (make_pred/2 '([ sussex kent ]
-                                [ sussex surrey]
-                                [ surrey kent ]
-                                [hampshire sussex]
-                                [hampshire surrey]
-                                [hampshire berkshire]
-                                [berkshire surrey]
-                                [wiltshire hampshire]
-                                [wiltshire berkshire]
-                                )))
-  (define (adjacent X Y )
-    (cond-e 
-     [ (border X Y )]
-     [ (border Y X) ]))
-  
-  
-  (define (affordable X Y)
-    (fresh (Z) 
-           (goalify (adjacent X Z))
-           (goalify (adjacent Z Y))))
-  
-  
-  
-  (printf "===========~n~s~n============" (run* (V ) (affordable 'kent V)))
-  
+#+begin_src scheme :tangle src_out/affordable_journeys.rkt :noweb yes
+    #lang racket 
+    (require (file "../../proll1/src_out/proll1.rkt"))
+    <<make_pred_2>>
+    
+    (define border (make_pred/2 '([ sussex kent ]
+                                  [ sussex surrey]
+                                  [ surrey kent ]
+                                  [hampshire sussex]
+                                  [hampshire surrey]
+                                  [hampshire berkshire]
+                                  [berkshire surrey]
+                                  [wiltshire hampshire]
+                                  [wiltshire berkshire]
+                                  )))
+    (define (adjacent X Y )
+      (cond-e 
+       [ (border X Y )]
+       [ (border Y X) ]))
+    
+    
+    (define (affordable X Y)
+      (fresh (Z) 
+             (goalify (adjacent X Z))
+             (goalify (adjacent Z Y))
+             (not-g (=:= X Y))
+             ))
+    
+    
+    
+    (printf "===========~n~s~n============" (run* (V W) (affordable V W)))
+    
 #+end_src 
 
 #+RESULTS:
-#+begin_example
-query for : #<Var>
- in :"lol"->kent, "lol"->sussex, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->surrey, "lol"->sussex, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->hampshire, "lol"->sussex, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->kent, "lol"->surrey, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->sussex, "lol"->surrey, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->hampshire, "lol"->surrey, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->berkshire, "lol"->surrey, "lol"->|_|, "lol"->|_|, ()
-===========
-((kent) (surrey) (hampshire) (kent) (sussex) (hampshire) (berkshire))
-============
-#+end_example
-
-
-
-
+: ===========
+: ((sussex surrey) (sussex kent) (sussex hampshire) (sussex berkshire) (surrey sussex) (hampshire kent) (hampshire surrey) (hampshire kent) (hampshire sussex) (hampshire berkshire) (hampshire surrey) (hampshire wiltshire) (berkshire kent) (berkshire sussex) (berkshire hampshire) (wiltshire sussex) (wiltshire surrey) (wiltshire berkshire) (wiltshire surrey) (wiltshire hampshire) (kent surrey) (kent hampshire) (surrey kent) (surrey hampshire) (kent sussex) (kent hampshire) (kent berkshire) (sussex surrey) (sussex berkshire) (sussex wiltshire) (surrey sussex) (surrey berkshire) (surrey wiltshire) (berkshire sussex) (berkshire surrey) (berkshire wiltshire) (surrey hampshire) (surrey wiltshire) (hampshire berkshire) (berkshire hampshire))
+: ============
 
 
 
@@ -399,7 +256,7 @@ query for : #<Var>
 
 *** prolog 
 
-#+begin_src swi_prolog 
+#+begin_src swi-prolog :tangle src_out/chap1_dag.pl :noweb yes 
 a(g,h).
 a(g,d).
 a(e,d).
@@ -415,13 +272,23 @@ a(f,c).
 path(X,X).
 path(X,Y) :- a(X,Z),path(Z,Y).
 
+go :- findall( (X) , path(g,X) , L ) , print(L),
+      format('~n-----------------~n'),
+      findall( (X) , path(X,c) , L2 ) , print(L2).
+
 #+end_src
 
+#+RESULTS:
+: % /Users/elkawee/src/projects/reasoned/clause_and_effect/examples/src_out/chap1_dag.pl compiled 0.00 sec, 14 clauses
+: [g,h,f,c,d]
+: -----------------
+: [c,g,h,e,a,a,a,b,b,f]
+
 *** racket 
-#+begin_src scheme :tangle ~/foo.rkt :noweb yes 
+#+begin_src scheme :tangle src_out/chap1_dag.pl :noweb yes 
   #lang racket
   <<make_pred_2>>
-  (require (file "/Users/elkawee/src/projects/reasoned/clause_and_effect/proll1/proll1.rkt"))
+  (require (file "../../proll1/src_out/proll1.rkt"))
   
   (define a (make_pred/2 '([g h]
                            [g d]
@@ -429,7 +296,6 @@ path(X,Y) :- a(X,Z),path(Z,Y).
                            [h f]
                            [e f]
                            [a e]
-                           [a b]
                            [a b]
                            [b f]
                            [b c]
@@ -444,21 +310,14 @@ path(X,Y) :- a(X,Z),path(Z,Y).
    
   
   (run* (X) (path 'g X))
+  (printf "~n=============================~n" )
+  (run* (X) (path X 'c))
   
 #+end_src 
 
 #+RESULTS:
-#+begin_example
-query for : #<Var>
- in :"lol"->g, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->h, "lol"->h, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->f, "lol"->f, "lol"->|_|, "lol"->h, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->c, "lol"->c, "lol"->|_|, "lol"->f, "lol"->|_|, "lol"->h, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->d, "lol"->d, "lol"->|_|, "lol"->|_|, ()
-'((g) (h) (f) (c) (d))
-#+end_example
+: '((g) (h) (f) (c) (d))
+: 
+: =============================
+: '((c) (g) (h) (e) (a) (a) (a) (b) (b) (f))
 
