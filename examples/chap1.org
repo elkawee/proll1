@@ -59,9 +59,9 @@ go :- findall( (A,B) , pair(A,B) , L ) , print(L).
 *** racket 
    die racket version ebenso 
 
-#+begin_src scheme :tangle ~/foo.rkt :noweb yes 
+#+begin_src scheme :tangle src_out/chap1_pairs.rkt :noweb yes 
   #lang racket
-  (require (file "/Users/elkawee/src/projects/reasoned/clause_and_effect/proll1/proll1.rkt"))
+  (require (file "../../proll1/src_out/proll1.rkt"))
   
   (define (male X)
     (cond-e
@@ -75,114 +75,18 @@ go :- findall( (A,B) , pair(A,B) , L ) , print(L).
      [(=:= X 'camilla)]))
   
   (define (pair X Y ) 
-    (and-g (male X ) (female Y))) 
+    (cond-e
+     [(male X )  (female Y)]
+     [(female X) (male   Y)]))
   
   
-  
-  (define (pair-rec X Y ) 
-    (cond-e 
-     [(male X ) (female Y ) ]
-     [(pair Y X)]))
-  
-  
-  
-  ;(run* (V1 V2 ) (pair V1 V2 ))
-  
-  (run* (V1 V2 Z)
+  (run* (V1 V2 )
         (pair V1 V2)
-        (cond-e 
-         [(=:= Z 'homo)]
-         [(=:= Z 'no-homo)]
-          ))
+)
 #+end_src
 
 #+RESULTS:
-#+begin_example
-G-list (#<procedure:...ction_blocks.rkt:94:39> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39>)
-making fresh: #<Var> #<procedure:...ction_blocks.rkt:49:37> 
-making fresh: #<Var> #<procedure:...ction_blocks.rkt:78:10> 
-making fresh: #<Var> #<procedure:...ction_blocks.rkt:78:10> 
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:91:39> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:49:37> #<procedure:...ction_blocks.rkt:94:39>)
-"lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:91:39> #<procedure:...ction_blocks.rkt:94:39>)
-"lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39>)
-"lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39>)
-"lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:46:37> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:31:10> #<procedure:...ction_blocks.rkt:94:39>)
-G-list (#<procedure:...ction_blocks.rkt:91:39> #<procedure:...ction_blocks.rkt:94:39>)
-"lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39>)
-"lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-G-list (#<procedure:...ction_blocks.rkt:94:39>)
-"lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-"lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->lucinda, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->camilla, "lol"->bertram, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->lucinda, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->homo, "lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->no-homo, "lol"->camilla, "lol"->parcival, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-'((bertram lucinda homo) (bertram lucinda no-homo) (bertram camilla homo) (bertram camilla no-homo) (parcival lucinda homo) (parcival lucinda no-homo) (parcival camilla homo) (parcival camilla no-homo))
-#+end_example
+: '((bert lucinda) (bert camilla) (parcival lucinda) (parcival camilla) (lucinda bert) (lucinda parcival) (camilla bert) (camilla parcival))
 
 
 ** drinking pairs 

@@ -65,7 +65,7 @@
             (f (sub-comp (elem-sub V (empty)) S))))
 
         (define (unify X Y S )
-;          (print-sub S)
+
           (define (ex L R S )  
             (sub-comp (elem-sub L R ) S ))
           (let ([X_ (walk X S)]
@@ -81,7 +81,7 @@
                                [ 'fail 'fail ]
                                [ (and S_ (sub)) (unify Xt Yt S_) ])]
                       [ ( _ _ ) (begin 
-                                  ;(printf "~s~s~n" X_ Y_ )
+
                                   (cond 
                                    [(equal? X_ Y_ ) S ]
                                    [else 'fail ]))])])))
@@ -110,8 +110,6 @@
         
 
         (define (query X S) ; macht nicht wirklich sinn weils nicht matchen kann 
-          (printf "query for : ~s~n in :" X )
-          (print-sub S)
           (match X
                  [ (Var _ _) (query (assoc* X S) S) ]
                  [ (cons H T) (cons (query H S) (query T S )) ]

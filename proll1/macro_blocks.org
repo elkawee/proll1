@@ -2,7 +2,7 @@
 * main 
 
 #+name: main
-#+begin_src scheme :noweb yes :tangle macro_blocks.rkt
+#+begin_src scheme :noweb yes :tangle src_out/macro_blocks.rkt
   
   (module macro_blocks racket 
           
@@ -16,7 +16,7 @@
   
           ; ---- impl --- ;
           (require "var_and_sub.rkt" )
-          (require "function_blocks.rkt" )
+          (require "core_function_blocks.rkt" )
   
           
     
@@ -104,3 +104,9 @@
 
 #+RESULTS: main
 
+: default-load-handler: cannot open input file: "/Users/elkawee/src/projects/reasoned/clause_and_effect/proll1/src_out/function_blocks.rkt" (No such file or directory; errno=2)
+: 
+:  === context ===
+: standard-module-name-resolver
+: standard-module-name-resolver
+: 
