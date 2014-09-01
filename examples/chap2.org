@@ -140,7 +140,7 @@ go :- L = [1,a,c,3],
     Ordinary scheme operators are obviously not defined over <proll_type/Var?>s.
 
     The letq form provides (qry Var?) on the right hand side which fetches a value from 
-    the current substitutions. 
+    the current substitution. 
     Should the variable be <empty> it exposes the same behaviour as ordinary prolog, 
     that is runtime crash. 
     
