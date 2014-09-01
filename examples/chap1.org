@@ -53,7 +53,7 @@
 
 *** prolog 
 
-#+begin_src swi-prolog :tangle src_out/chap1_pairs.pl :noweb yes 
+#+begin_src swi-prolog :tangle src_out/chap1_pairs.pl :noweb yes
 
 male(bert).
 male(parcival).
@@ -221,7 +221,7 @@ kann hier nicht unausgefuehrt bleiben, wegen contract violation auf make-cond-e
 
 das reicht erstmal an metaing the meta 
 
-#+begin_src scheme :tangle src_out/affordable_journeys.rkt :noweb yes
+#+begin_src scheme :tangle src_out/chap1_affordable_journeys.rkt :noweb yes
     #lang racket 
     (require (file "../../proll1/src_out/proll1.rkt"))
     <<make_pred_2>>
