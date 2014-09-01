@@ -80,10 +80,20 @@
           (define-syntax and-wrap  (syntax-rules () 
                                      [ (_ body) body ] 
                                      [ (_ B1 body ... ) (make-and-G B1 body ... ) ] ))
+
+
+	(require (for-syntax racket))
+	(define-syntax syntax->var (lambda ( V-stx ) 
+				     (match-let ( [ (list nv name) (syntax->datum V-stx)  ] 
+						  )
+						#`(Var #,( symbol->string name) #,(syntax-line V-stx))
+					       )
+				     ))
+
     
           (define-syntax new-var-let (syntax-rules () 
                                        [ (_ V body ... )
-                                         (let ([V (Var "lol" 1 )])
+                                         (let ([V (syntax->var V )])
                                            body ... )]))
           
           (define-syntax new-var-let* (syntax-rules () 
@@ -104,9 +114,11 @@
 
 #+RESULTS: main
 
-: default-load-handler: cannot open input file: "/Users/elkawee/src/projects/reasoned/clause_and_effect/proll1/src_out/function_blocks.rkt" (No such file or directory; errno=2)
+: src_out/var_and_sub.rkt:9:16: struct: unrecognized struct-specification keyword at: #:methods in: (struct Var proll-type (Name line) #:methods gen:custom-write ((define (write-proc V port w?) (fprintf port "~a:l~s" (Var-Name V) (Var-line V)))))
 : 
 :  === context ===
+: /Applications/Racket v5.2/collects/racket/private/define-struct.rkt:113:2
+: /Applications/Racket v5.2/collects/racket/private/modbeg.rkt:46:4
 : standard-module-name-resolver
 : standard-module-name-resolver
 : 

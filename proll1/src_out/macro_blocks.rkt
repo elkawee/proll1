@@ -75,10 +75,20 @@
         (define-syntax and-wrap  (syntax-rules () 
                                    [ (_ body) body ] 
                                    [ (_ B1 body ... ) (make-and-G B1 body ... ) ] ))
+
+
+      (require (for-syntax racket))
+      (define-syntax syntax->var (lambda ( V-stx ) 
+                                   (match-let ( [ (list nv name) (syntax->datum V-stx)  ] 
+                                                )
+                                              #`(Var #,( symbol->string name) #,(syntax-line V-stx))
+                                             )
+                                   ))
+
   
         (define-syntax new-var-let (syntax-rules () 
                                      [ (_ V body ... )
-                                       (let ([V (Var "lol" 1 )])
+                                       (let ([V (syntax->var V )])
                                          body ... )]))
         
         (define-syntax new-var-let* (syntax-rules () 

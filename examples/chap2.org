@@ -1,6 +1,6 @@
 * prelude
 
-  eval functions 
+** babel eval functions 
 
 #+begin_src emacs-lisp
   (defun org-babel-execute:swi-prolog (body params)
@@ -40,7 +40,7 @@
 : org-babel-execute:scheme
 
 
-
+** racket stub
 
 #+name: rack_header
 #+begin_src scheme
@@ -180,16 +180,11 @@ go :- L = [1,a,c,3],
 #+end_src 
 
 #+RESULTS:
-: '((1 ()) (2 (lol:l1 . lol:l1)) (3 (lol:l1 . lol:l1)))
+: '((1 ()) (2 (H:l91 . T:l91)) (3 (H:l91 . T:l91)))
 
 
-
+    
 ** inner product 
 
-*** prolog 
-
-#+begin_src swipl
-
-#+end_src     
-
-
+    
+    
