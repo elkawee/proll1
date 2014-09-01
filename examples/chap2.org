@@ -1,8 +1,51 @@
-* foo 
+* prelude
+
+  eval functions 
+
+#+begin_src emacs-lisp
+  (defun org-babel-execute:swi-prolog (body params)
+    "experimentally exec prolog"
+    ;; im wesentlichen geklaut von org-babel-execute:js
+    (let* ((tangle (cdr (assoc :tangle params )))
+           (script-file (if (string-equal tangle "no" )
+                            (org-babel-temp-file "prolog-tmp-" ) 
+                          tangle )))
+      
+      
+      (with-temp-file script-file (insert body))
+      (shell-command-to-string
+       (message (format "swipl -g 'go.' -t halt -s %s" 
+                        (org-babel-process-file-name script-file))))
+      
+      )
+    )
+  
+  (defun org-babel-execute:scheme (body params)
+    (let* ((tangle (cdr (assoc :tangle params)))
+           (script-file 
+            (if (string-equal tangle "no")
+                (org-babel-temp-file "org-babel-" ".rkt")
+              tangle)))
+      (with-temp-file script-file
+        (insert body))
+      (let* ((pn (org-babel-process-file-name script-file))
+             (cmd (format "\"$(which racket)\" -u %s" pn)))
+        (message cmd)
+        (shell-command-to-string cmd)
+        )))
+  
+#+end_src
+
+#+RESULTS:
+: org-babel-execute:scheme
+
+
+
+
 #+name: rack_header
 #+begin_src scheme
 #lang racket 
-(require (file "~/src/projects/reasoned/clause_and_effect/proll1/proll1.rkt"))
+(require (file "../../proll1/src_out/proll1.rkt"))
 #+end_src
 
 
@@ -11,21 +54,28 @@
 
 *** prolog 
 
-#+begin_src swi_prolog 
 
+#+begin_src swi-prolog :tangle src_out/chap2_member.pl :noweb yes 
 member(X,[X|_]).
 member(X,[_|T]):- member(X,T).
 
 mystery(X, L1, L2):- member(X, L1), member(X, L2).
 
+go :- L1 = [ a , b , c ,d ] ,
+      L2 = [ b , a],
+      findall( X , mystery( X , L1 , L2 ) , Res ) ,
+      print( Res ) . 
+
 #+end_src 
+
+#+RESULTS:
+: % /Users/elkawee/src/projects/reasoned/clause_and_effect/examples/src_out/chap2_member.pl compiled 0.00 sec, 5 clauses
+: [a,b]
 
 *** racket 
 
-#+begin_src scheme :tangle ~/foo.rkt 
-  #lang racket
-  (require (file "~/src/projects/reasoned/clause_and_effect/proll1/proll1.rkt"))
-  
+#+begin_src scheme :tangle src_out/chap2_member.rkt :noweb yes
+  <<rack_header>>
   (define (member X L )
     (fresh (H T)
            (=:= (cons H T) L) ; bricht hier einfach ab, wenn nil nicht mit (cons H T) unified
@@ -45,10 +95,6 @@ mystery(X, L1, L2):- member(X, L1), member(X, L2).
 #+end_src 
 
 #+RESULTS:
-: query for : #<Var>
-:  in :"lol"->(), "lol"->a, "lol"->|_|, "lol"->|_|, "lol"->(a), "lol"->e, "lol"->|_|, "lol"->|_|, "lol"->(e a), "lol"->d, "lol"->|_|, "lol"->|_|, "lol"->(d e a), "lol"->c, "lol"->|_|, "lol"->|_|, "lol"->a, "lol"->(b c), "lol"->a, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-: query for : #<Var>
-:  in :"lol"->(d e a), "lol"->c, "lol"->|_|, "lol"->|_|, "lol"->c, "lol"->(), "lol"->c, "lol"->|_|, "lol"->|_|, "lol"->(c), "lol"->b, "lol"->|_|, "lol"->|_|, "lol"->(b c), "lol"->a, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
 : '((a) (c))
 
 
@@ -59,36 +105,46 @@ mystery(X, L1, L2):- member(X, L1), member(X, L2).
 
 *** prolog
 
-#+begin_src swi_prolog 
+
+#+begin_src swi-prolog :tangle src_out/chap1_length.pl :noweb yes
+
+% evalation order is cirtical 
+% N is N1+1 can only be evaluated once N1 is bound
 
 length1([], 0).
 length1([_|T], N):- length1(T,N1), N is N1+1.
-% fuer arithmetik braucht es zuerst den rekursionsabstieg                                                             
-% bei:- N is N1+1, length(T,N1)                                                                                       
-% waere N1 noch nicht gebunden                                                                                        
-% auf-fjeden kann dieser operator <empty_1> is (+ <empty_2> 1) nicht unifizieren                                      
-% wer sagt das das unmoeglich ist?                                                                                    
+
+
+% using accumulator to be able to have the goal in tail position
 
 length2(L,N):- accumulate(L,0,N).
 accumulate([],A,A).
 accumulate([_|T],A,N):- A1 is A+1, accumulate(T,A1,N).
 
-% zaehlt a hoch, geht - weil am anfang an 0 gebunden                                                                  
-% ist die liste leer wird der hochgezaehlte wert an N gebunden, dass bis dahin <empty> bleibt
+go :- L = [1,a,c,3],
+      findall( N , length1(L,N) , Out1 ) ,
+      print(Out1),
+      findall( N , length2(L,N) , Out2 ) ,
+      print(Out2).
 
 
 #+end_src 
 
+#+RESULTS:
+: % /Users/elkawee/src/projects/reasoned/clause_and_effect/examples/src_out/chap1_pairs.pl compiled 0.00 sec, 7 clauses
+: [4][4]
+
 *** racket 
-
-    Operatoren, ausser cons, koennen nicht auf werte zugreifen 
-    es braucht einen extra operator der rumquery-d 
     
-    das bedeutet allerdings auch, dass hier mit der evaluation order getrixt werden muss 
+    The same problem as with the evaluation order abve.
+    Ordinary scheme operators are obviously not defined over <proll_type/Var?>s.
 
-    im Ausdruck (=:= N (+ N_ 1)) wuerde z.Z. (+ N_ 1)
-
-#+begin_src scheme :noweb yes
+    The letq form provides (qry Var?) on the right hand side which fetches a value from 
+    the current substitutions. 
+    Should the variable be <empty> it exposes the same behaviour as ordinary prolog, 
+    that is runtime crash. 
+    
+#+begin_src scheme :tangle src_out/chap2_length.rkt :noweb yes
   <<rack_header>>
   
   (define (length1 L N)
@@ -124,69 +180,7 @@ accumulate([_|T],A,N):- A1 is A+1, accumulate(T,A1,N).
 #+end_src 
 
 #+RESULTS:
-#+begin_example
-query for : #<Var>
- in :"lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : 0
- in :"lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : 1
- in :"lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : 2
- in :"lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->1, "lol"->(), "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : 1
- in :"lol"->1, "lol"->(), "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->1, "lol"->(), "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : ()
- in :"lol"->1, "lol"->(), "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : 2
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : (#<Var> . #<Var>)
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<empty>
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : ()
- in :"lol"->2, "lol"->(), "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : 3
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : (#<Var> . #<Var>)
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<empty>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : (#<Var> . #<Var>)
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<empty>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : #<Var>
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-query for : ()
- in :"lol"->3, "lol"->(), "lolq"->3, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->2, "lol"->(#<Var> . #<Var>), "lol"->|_|, "lol"->|_|, "lolq"->1, "lol"->"lol", "lol"->1, "lol"->|_|, "lol"->|_|, "lol"->0, "lol"->|_|, "lol"->|_|, "lol"->|_|, ()
-'((1 ()) (2 (#<empty>)) (3 (#<empty> #<empty>)))
-#+end_example
+: '((1 ()) (2 (lol:l1 . lol:l1)) (3 (lol:l1 . lol:l1)))
 
 
 

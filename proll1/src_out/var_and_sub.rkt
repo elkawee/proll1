@@ -120,6 +120,12 @@
                  [ (cons H T) (cons (query H S) (query T S )) ]
                  [ (or (? RVal?) (empty) ) X ]))
 
+	(define (ext-s V X Sub)
+	  (sub-comp (elem-sub V X ) Sub ))
+
+	(provide ext-s)
+
+
                           
 
         (require (for-syntax racket))
