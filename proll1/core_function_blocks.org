@@ -1,22 +1,15 @@
 
 * prosa 
 **  _evaluation order_ : 
-    bei derzeitiger funktionsweise ist rekursion problematisch 
 
-    das dumme ist, das hier code erzeugung und auswertung ineinander verwoben sind 
+    to clarify evaluation order
 
-    Fall: func_X :- (and-G (=:= X Y) (func_X Y Z))
-    (todo besseres beispiel)
-    
-    betrachten ((lambda S) <code> ) wie einen stopp-Marker, der die Ausführung von <code>
-    verzögert.
 
-    (): normale Ausführung
-    {}: lambda wrapping Asuführung
-    []: matching auf listen (erlang style)
-    ; : sequenz
+    (): normal execution
+    {}: wrap in lambda
+    []: matching on lists (erlang style)
+    ; : sequence
 
-    damit ist : 
 
     and-G [F] : {(F)},
     and-G [Fh Frest] : { (Fh) ; (and-G Frest) }
@@ -24,19 +17,16 @@
     fresh F : F 
 
     make-cond-G [F] : { (F) }
-    make-cond-G [Fh Frest] : { F ; (make-cond-G Frest)  }  # ja, and-G fuehrt Fh aus, cond-G schleift sie zu run* durch 
+    make-cond-G [Fh Frest] : { F ; (make-cond-G Frest)  }  
     
     make-not-G F : { (F) ; (make-not-G {F'}) }
     make-not-G F : { (F) ; (make-not-G {(make-and-G F' F')}  ) }
 
-    make=:= X1 X2 : -- macht gar nichts zZ. kann nicht mal goals annehmen ( macht auch keinen sinn - es gibt keine return values )
-                    -- verlaesst sich darauf, dass X1 X2 variabeln sind 
 
 
 * exposed-query 
 
-   namensgebung hier mal ohne make, weil kein (lambda(S) ... ) -> goal erzeugt wird 
-
+  an exposed query is needed for stuff like  X is X1 + 1 
 #+name: exposed_query 
 #+begin_src scheme 
   ; tree filtering macro? 
@@ -49,6 +39,13 @@
 
   
 * goalify 
+  wraps expression around yet an other (lambda (S) ( ... ))
+
+  Since make* are normal scheme functions called at runtime 
+  the scheme evaluation order would wreck havoc on all recursive terms.
+  
+  e.g. endless recursion in the test below, upon the first call of (on-of ... ) 
+  
 #+name: goalify    
 #+begin_src scheme
   
@@ -119,10 +116,9 @@ query for : #<Var>
 * letq
 
 ** prosa 
-
-   wie tree filter macro in notes/racket (durchschleife macro ) 
-
-   seeehr strange, wenn der idendtifyer query statt query_ ist kommt es hier zu einem konflikt    
+   
+   tree filter macro - DSFs through the righthand s-exp and replaces all (qry X ) 
+   with an expression, that evaluates to the value of the current substitution for X
 
 ** impl
 
@@ -133,7 +129,7 @@ query for : #<Var>
     (define-syntax letq (syntax-rules ()
                           [(_ ([V Exp]) body ... )
                            (lambda (S)
-                             (let* ([ V (Var "lolq" 1) ]
+                             (let* ([ V (syntax->var V ) ]
                                     [ S2 (ext-s V (q-filter S Exp) S )])
                                (goal-c (make-and-G body ... ) S2 (@u))))
                            ]))
@@ -147,23 +143,17 @@ query for : #<Var>
     
 #+end_src 
 
+
 ** test 
 
-   nur wegen module load paths mal in das source dir reintanglen 
-   die load-language meshed nicht so gut mit dem was hier versucht wurde 
-   wenn hier function blocks rein-ge-pastet wird als 
-   (require 'function_blocks ) 
-   und in macro_blocks 
-   (require "function_blocks")
-   sind das 2 verschiedene module und der ganze spass faellt auseinander 
-
-#+begin_src scheme :noweb yes :tangle /tmp/foo.rkt
+   TODO mesh into racket testing framework
+#+begin_src scheme :noweb yes :tangle ../ignore/foo.rkt
   #lang racket/load 
   
   <<main>> 
       
   (require 'function_blocks )
-  (require "var_and_sub.rkt")
+  (require "src_out/var_and_sub.rkt")
   
   (new-var X)
   (new-var Z)
@@ -181,12 +171,6 @@ query for : #<Var>
       
 #+end_src
 
-#+RESULTS:
-: query for : #<Var>
-:  in :"Z"->5, "Z"->|_|, "X"->|_|, ()
-: query for : #<Var>
-:  in :"X"->6, "lolq"->6, "Z"->5, "Z"->|_|, "X"->|_|, ()
-: 6
 
 
 
@@ -376,3 +360,4 @@ query for : #<Var>
 
 
 
+  
