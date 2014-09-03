@@ -1,0 +1,22 @@
+
+
+An Experiment with prolog style evaluators and org-babel for literate programming.
+
+./proll1 ( prolog like language 1 ) contains the evaluators implementation in org files.
+It until now most of it's ideas are directly from the famous Reasoned Schemer.
+
+./examples follows William F.Clocksin's book Clause and Effect with it's exercises done in both:
+standart prolog and the evaluator from ./proll1 to make sure ideomatic prolog stuff has a
+behaviour close to the original.
+
+All .org files are set up so that, they tangle to a respective ./src_out folder 
+and dump their execution's result directly back into the .org
+
+
+TODO : 
+- take the literate part more seriously
+- utilize racket's test framework
+- the evaluator is kind of retarded 
+  - prolog style meta programming is flat out impossible with this approach 
+  - cut and freeze will be hard to implement
+  - slow doesn't even begin to describe it

@@ -1,52 +1,6 @@
 
 
-* babel prelude
 
-  Since, at the time of writing, all ob-<lang>.el implementations are 
-  kind of broken/inconsitend in their treatment of the various options,
-  here are 2 more broken implementations. 
-
-  But at least they work for the subset of options used in this file.
-
-#+begin_src emacs-lisp
-  (defun org-babel-execute:swi-prolog (body params)
-    "experimentally exec prolog"
-    ;; im wesentlichen geklaut von org-babel-execute:js
-    (let* ((tangle (cdr (assoc :tangle params )))
-           (script-file (if (string-equal tangle "no" )
-                            (org-babel-temp-file "prolog-tmp-" ) 
-                          tangle )))
-      
-      
-      (with-temp-file script-file (insert body))
-      (shell-command-to-string
-       (message (format "swipl -g 'go.' -t halt -s %s" 
-                        (org-babel-process-file-name script-file))))
-      
-      )
-    )
-  
-  (defun org-babel-execute:scheme (body params)
-    (let* ((tangle (cdr (assoc :tangle params)))
-           (script-file 
-            (if (string-equal tangle "no")
-                (org-babel-temp-file "org-babel-" ".rkt")
-              tangle)))
-      (with-temp-file script-file
-        (insert body))
-      (let* ((pn (org-babel-process-file-name script-file))
-             (cmd (format "\"$(which racket)\" -u %s" pn)))
-        (message cmd)
-        (shell-command-to-string cmd)
-        )))
-  
-#+end_src
-
-#+RESULTS:
-: org-babel-execute:scheme
-
-
-## 
 * book 
 
 ** party pairs 
@@ -77,7 +31,13 @@ go :- findall( (A,B) , pair(A,B) , L ) , print(L).
 
 
 *** racket 
-   die racket version ebenso 
+    there is no proper equivalent to global predicates but
+    foo(a).
+    foo(b).
+    and 
+    foo(X):- X==a;X==b.
+    is pretty much the same so : 
+    
 
 #+begin_src scheme :tangle src_out/chap1_pairs.rkt :noweb yes :result-type raw
   #lang racket
@@ -198,9 +158,19 @@ go :- findall( (X,Y) , affordable(X,Y) , L ) , print(L).
 
 *** racket 
 
-[((make_pred/2 rest ) X Y)]
-kann hier nicht unausgefuehrt bleiben, wegen contract violation auf make-cond-e 
-{will (-> sub? goal?), bekommt binaere funktion }
+    macro less implementation for the sport of it
+
+    list of associations turned into a binaray function which, in turn evaluates to a goal 
+    that is why ((make_pred/2 rest ) X Y) needs immediate execution in the tail of it's definition
+    
+    it's invocation can be thought of as prolog-macro-expansion time,
+    only, that it is interspersed with it's runtime.
+    
+    there is no proper AST equivalent, the goals are both, AST and runtime stack structures and 
+    are destroyed upon evaluation 
+    ( kind of like the php interpreter with it's "generate opcodes and immediatly throw them away"
+      behaviour ... i need to fix this ) 
+    
 
 
 #+name: make_pred_2
@@ -219,7 +189,7 @@ kann hier nicht unausgefuehrt bleiben, wegen contract violation auf make-cond-e
 #+end_src 
 
 
-das reicht erstmal an metaing the meta 
+
 
 #+begin_src scheme :tangle src_out/chap1_affordable_journeys.rkt :noweb yes
     #lang racket 
@@ -265,7 +235,7 @@ das reicht erstmal an metaing the meta
 
 
 ** directed acyclic graph 
-
+   
 *** prolog 
 
 #+begin_src swi-prolog :tangle src_out/chap1_dag.pl :noweb yes 
@@ -333,3 +303,52 @@ go :- findall( (X) , path(g,X) , L ) , print(L),
 : =============================
 : '((c) (g) (h) (e) (a) (a) (a) (b) (b) (f))
 
+
+
+* babel prelude
+
+  Since, at the time of writing, all ob-<lang>.el implementations are 
+  kind of broken/inconsitend in their treatment of the various options,
+  here are 2 more broken implementations. 
+
+  But at least they work for the subset of options used in this file.
+
+#+begin_src emacs-lisp
+  (defun org-babel-execute:swi-prolog (body params)
+    "experimentally exec prolog"
+    ;; mostly stolen from org-babel-execute:js
+    (let* ((tangle (cdr (assoc :tangle params )))
+           (script-file (if (string-equal tangle "no" )
+                            (org-babel-temp-file "prolog-tmp-" ) 
+                          tangle )))
+      
+      
+      (with-temp-file script-file (insert body))
+      (shell-command-to-string
+       (message (format "swipl -g 'go.' -t halt -s %s" 
+                        (org-babel-process-file-name script-file))))
+      
+      )
+    )
+  
+  (defun org-babel-execute:scheme (body params)
+    (let* ((tangle (cdr (assoc :tangle params)))
+           (script-file 
+            (if (string-equal tangle "no")
+                (org-babel-temp-file "org-babel-" ".rkt")
+              tangle)))
+      (with-temp-file script-file
+        (insert body))
+      (let* ((pn (org-babel-process-file-name script-file))
+             (cmd (format "\"$(which racket)\" -u %s" pn)))
+        (message cmd)
+        (shell-command-to-string cmd)
+        )))
+  
+#+end_src
+
+#+RESULTS:
+: org-babel-execute:scheme
+
+
+## 
